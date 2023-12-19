@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const config = defineConfig({
-  testDir: './tests',
+  testMatch: '/tests/**/*.spec.js',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
@@ -12,7 +12,6 @@ const config = defineConfig({
 
   use: {
     baseURL: 'https://qauto.forstudy.space',
-
     acceptDownloads: false,
     httpCredentials:{
       username: 'guest',
@@ -20,31 +19,35 @@ const config = defineConfig({
     },
     actionTimeout:1_500,
     headless: false,
+
+    launchOptions:{
+      slowMo: 700
+    }
   },
 
   projects:[
-    {
-      name: 'setup',
-      testMatch: 'tests/setups/*.setup.js',
-    },
-    {
-      name: 'teardown',
-      testMatch: 'tests/setups/*.teardown.js'
-    },
+    // {
+    //   name: 'setup',
+    //   testMatch: 'tests/setups/*.setup.js',
+    // },
+    // {
+    //   name: 'teardown',
+    //   testMatch: 'tests/setups/*.teardown.js'
+    // },
     {
       name: 'smoke',
-      grep: /@smoke/,
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
-      teardown: 'teardown'
-    },
-    {
-      name: 'regression',
-      grep: /@regression/,
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
-      teardown: 'teardown'
+      // grep: /@smoke/,
+      use: { ...devices['Desktop Chrome'] }
+      // dependencies: ['setup'],
+      // teardown: 'teardown'
     }
+    // {
+    //   name: 'regression',
+    //   grep: /@regression/,
+    //   use: { ...devices['Desktop Chrome'] },
+    //   dependencies: ['setup'],
+    //   teardown: 'teardown'
+    // }
   ],
 
 
