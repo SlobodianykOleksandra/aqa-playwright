@@ -42,6 +42,8 @@ test.describe('Suite7. User creation',()=> {
 
         await expect(createBtn).toBeEnabled()
         await createBtn.click()
+
+        await expect(page).toHaveURL('/panel/garage')
     })
 
     test('TC7.2. Remove user manually',async ({page})=>{
@@ -63,29 +65,23 @@ test.describe('Suite7. User creation',()=> {
         await passwordInput.fill(toRemoveUserData.password)
         await reEnterInput.fill(toRemoveUserData.repeat)
 
+        await expect(createBtn).toBeEnabled()
         await createBtn.click()
 
-        // await page.waitForEvent('popup')
+        await expect(page).toHaveURL('/panel/garage')
 
-        // await expect(createBtn).toBeEnabled()
-        // await createBtn.click()
-        //
-        // await page.getByText('Register').click();
-        // await page.waitForURL('**/api/auth/signup')
-        // await expect(page).toHaveURL('/panel/garage')
+        const settingsBtn = page.getByRole('link', { name: 'Settings' })
+        await settingsBtn.click()
 
-        // const settingsBtn = page.locator('a',{hasText:'Settings'})
-        // await settingsBtn.click()
-        //
-        // await page.waitForURL('https://qauto.forstudy.space/panel/settings')
-        //
-        // const removeBtn = page.locator('button',{hasText:'Remove my account'})
-        // await removeBtn.click()
-        //
-        // const removeModal = page.locator('//app-remove-account-modal')
-        // await expect(removeModal).toBeVisible()
-        //
-        // const confirmRemoveBtn = removeModal.locator('button',{hasText:'Remove'})
-        // await confirmRemoveBtn.click()
+        await expect(page).toHaveURL('/panel/settings')
+
+        const removeBtn = page.locator('button',{hasText:'Remove my account'})
+        await removeBtn.click()
+
+        const removeModal = page.locator('//app-remove-account-modal')
+        await expect(removeModal).toBeVisible()
+
+        const confirmRemoveBtn = removeModal.locator('button',{hasText:'Remove'})
+        await confirmRemoveBtn.click()
     })
 })

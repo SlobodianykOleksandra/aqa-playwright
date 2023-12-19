@@ -17,11 +17,11 @@ const config = defineConfig({
       username: 'guest',
       password: 'welcome2qauto',
     },
-    actionTimeout:1_500,
+    // actionTimeout:1_500,
     headless: false,
 
     launchOptions:{
-      slowMo: 700
+      slowMo: 500
     }
   },
 
@@ -54,6 +54,6 @@ const config = defineConfig({
   outputDir: 'test-results',
   // globalSetup: 'tests/setups/mySet.setup.js',
   // globalTeardown: 'tests/setups/mySet.teardown.js',
-  timeout: 7_000
+  // timeout: 7_000
 });
 export default config
