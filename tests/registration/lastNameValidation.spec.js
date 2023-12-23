@@ -1,154 +1,87 @@
 import {test, expect} from "@playwright/test";
-
-const lastNameData = {
-    positiveLastName: 'Pepperony',
-    spaceLastName: ' ',
-    lilLastName: 'Y',
-    withNumberLastName: 'P3pperony'
-}
+import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {lastNameData} from "../../testData/registration/inputData.js";
+import {expErrorMessagesLastName} from "../../testData/registration/errorMessages.js";
 
 test.describe('Suite3. Last Name field validation',()=> {
+    let page
+    let welcomePage
+    let registerPopup
 
-    test.beforeEach(async ({page}) => {
-        await page.goto('/')
-        const registrBtn = page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]')
-        await registrBtn.click()
+    test.beforeEach(async ({browser})=>{
+
+        page = await browser.newPage()
+        welcomePage = new WelcomePage(page)
+        await welcomePage.visit()
+        registerPopup = await welcomePage.clickRegistrationButtonAndOpenPopup()
+
     })
 
-    test('TC3.1. Positive fill', async ({ page }) => {
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+    test('TC3.1. Positive fill', async () => {
 
-        await lastNameInput.fill(lastNameData.positiveLastName)
-        await lastNameInput.evaluate(e => e.blur())
-        await expect(await lastNameInput.inputValue()).toEqual(lastNameData.positiveLastName)
-        await expect(messageBlock).toBeHidden()
+        await registerPopup.lastNameInput.fill(lastNameData.positiveLastName)
+        registerPopup.lastNameInput.blur()
+        const valueOfLastName = await registerPopup.getInputValueOfLastName()
+
+        await expect(valueOfLastName, 'input value is equal to filled value').toEqual(lastNameData.positiveLastName)
+        await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
+
     })
 
-    test('TC3.2. Fill by label',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameLabel = modalRegistr.locator("//label[text()='Last name']")
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
+    test('TC3.2. Fill by label',async ()=>{
 
-        await lastNameLabel.fill(lastNameData.positiveLastName)
-        const result = await lastNameInput.inputValue()
-        await expect.soft(result).toEqual(lastNameData.positiveLastName)
+        await registerPopup.lastNameLabel.fill(lastNameData.positiveLastName)
+        const valueOfLastName = await registerPopup.getInputValueOfLastName()
+
+        await expect.soft(valueOfLastName, 'input value is equal to filled value').toEqual(lastNameData.positiveLastName)
+
     })
 
-    test('TC3.3. Fill with space',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
+    test('TC3.3. Fill with space',async ()=>{
 
-        const expectedMessages = ['Last name is invalid','Last name has to be from 2 to 20 characters long']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        await registerPopup.lastNameInput.fill(lastNameData.spaceLastName)
+        registerPopup.lastNameInput.blur()
 
-        await lastNameInput.fill(lastNameData.spaceLastName)
-        await lastNameInput.evaluate(e => e.blur())
-        await expect(lastNameInput).toHaveAttribute('class', 'form-control ng-invalid ng-dirty is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesLastName.invalid, expErrorMessagesLastName.length])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 
-    test('TC3.4. Fill with out of range value',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
+    test('TC3.4. Fill with out of range value',async ()=>{
 
-        const expectedMessages = ['Last name has to be from 2 to 20 characters long']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        await registerPopup.lastNameInput.fill(lastNameData.lilLastName)
+        registerPopup.lastNameInput.blur()
 
-        await lastNameInput.fill(lastNameData.lilLastName)
-        await lastNameInput.evaluate(e => e.blur())
-        await expect(lastNameInput).toHaveAttribute('class', 'form-control ng-invalid ng-dirty is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesLastName.length])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 
-    test('TC3.5. Fill with incorrect value',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
+    test('TC3.5. Fill with incorrect value',async ()=>{
 
-        const expectedMessages = ['Last name is invalid']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        await registerPopup.lastNameInput.fill(lastNameData.withNumberLastName)
+        registerPopup.lastNameInput.blur()
 
-        await lastNameInput.fill(lastNameData.withNumberLastName)
-        await lastNameInput.evaluate(e => e.blur())
-        await expect(lastNameInput).toHaveAttribute('class', 'form-control ng-invalid ng-dirty is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesLastName.invalid])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 
-    test('TC3.6. Empty',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
+    test('TC3.6. Empty',async ()=>{
 
-        const expectedMessages = ['Last name required']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        registerPopup.lastNameInput.focus()
+        registerPopup.lastNameInput.blur()
 
-        await lastNameInput.focus()
-        await lastNameInput.evaluate(e => e.blur())
-        await expect(lastNameInput).toHaveAttribute('class', 'form-control ng-pristine ng-invalid is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesLastName.required])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 })

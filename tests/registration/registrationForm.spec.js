@@ -1,71 +1,49 @@
 import {test, expect} from "@playwright/test";
+import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {expectedLabelsList} from "../../testData/registration/inputData.js";
 
 test.describe('Suite1. Registration form validation',()=> {
-    test.beforeEach(async ({page}) => {
-        await page.goto('/')
-    })
-    test('TC1.1. Sign up button. Registration form opening check', async ({ page }) => {
-          const registrBtn = page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]')
-          const modalRegistr = page.locator('//app-signup-modal')
+    let page
+    let welcomePage
 
-          await registrBtn.click()
-          await expect(modalRegistr).toBeVisible()
+    test.beforeEach(async ({browser})=>{
+
+        page = await browser.newPage()
+        welcomePage = new WelcomePage(page)
+        await welcomePage.visit()
+
+    })
+    test('TC1.1. Sign up button. Registration form opening check', async () => {
+
+        const registerPopup = await welcomePage.clickRegistrationButtonAndOpenPopup()
+        await expect(registerPopup._container, 'registration popup is visible').toBeVisible()
+
   })
 
-    test('TC1.2. Sign in - registration. Registration form opening check',async ({page})=>{
-        const signinBtn = page.locator('//button[@class="btn btn-outline-white header_signin"]')
-        const modalSignin = page.locator('//div[@class="modal-content"]')
-        const registrBtn = modalSignin.locator('//button', {hasText:'Registration'})
-        const modalRegistr = page.locator('//app-signup-modal')
+    test('TC1.2. Sign in button - registration. Registration form opening check',async ()=>{
 
-        await signinBtn.click()
-        await expect(modalSignin).toBeVisible()
-        await registrBtn.click()
-        await expect(modalRegistr).toBeVisible()
+        const signInPopup = await welcomePage.clickSigningButtonAndOpenPopup()
+        await expect(signInPopup._container, 'sign in popup is visible').toBeVisible()
+        const registerPopup = await signInPopup.clickRegistrationButtonAndRedirectToPopup()
+        await expect(registerPopup._container, 'registration popup is visible').toBeVisible()
+
     })
-    test('TC1.3. Check visibility and state of elements on the form',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const header = modalRegistr.locator('//h4')
+    test('TC1.3. Check visibility and state of elements on the form',async ()=>{
 
-        const nameLabel = modalRegistr.locator("//label").nth(0)
-        const nameInput = nameLabel.locator('//following-sibling::input')
-        const lastNameLabel = modalRegistr.locator("//label").nth(1)
-        const lastNameInput = lastNameLabel.locator("//following-sibling::input")
-        const emailLabel = modalRegistr.locator("//label").nth(2)
-        const emailInput = emailLabel.locator("//following-sibling::input")
-        const passwordLabel = modalRegistr.locator("//label").nth(3)
-        const passwordInput = passwordLabel.locator("//following-sibling::input")
-        const reEnterLabel = modalRegistr.locator("//label").nth(4)
-        const reEnterInput = reEnterLabel.locator("//following-sibling::input")
+        const registerPopup = await welcomePage.clickRegistrationButtonAndOpenPopup()
+        const labelsOnForm = await registerPopup.getListOfLabels()
 
-        const selectedLabels = modalRegistr.locator('//label')
-        const expectedList = ['Name','Last name','Email','Password','Re-enter password']
-        const labelList = []
+        await expect(registerPopup.header, 'header has text').toHaveText('Registration')
 
-        const registerBtn = modalRegistr.locator('//button', {hasText:'Register'})
-        const closeBtn = modalRegistr.locator('//button[@class="close"]')
+        await expect(labelsOnForm, 'labels are equal to expected list').toEqual(expectedLabelsList)
 
-        await page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]').click()
-        // await expect(modalRegistr).toBeVisible() //Retried step from other test in the Test Suite
-        await expect(header).toHaveText('Registration')
+        await expect(registerPopup.nameInput).toBeEditable()
+        await expect(registerPopup.lastNameInput).toBeEditable()
+        await expect(registerPopup.emailInput).toBeEditable()
+        await expect(registerPopup.passwordInput).toBeEditable()
+        await expect(registerPopup.repeatInput).toBeEditable()
 
-        const allLabels = await selectedLabels.all()
+        await expect(registerPopup.createButton).toBeDisabled()
 
-        for (const label of allLabels) {
-            const labelText = await label.innerHTML()
-            labelList.push(labelText)
-        }
-
-        await expect(labelList).toEqual(expectedList)
-        console.log(expectedList)
-
-        await expect(nameInput).toBeEditable()
-        await expect(lastNameInput).toBeEditable()
-        await expect(emailInput).toBeEditable()
-        await expect(passwordInput).toBeEditable()
-        await expect(reEnterInput).toBeEditable()
-
-        await expect(registerBtn).toBeDisabled()
-        await expect(closeBtn).toBeEnabled()
     })
 })

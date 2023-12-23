@@ -1,87 +1,54 @@
 import {test, expect} from "@playwright/test";
-
-const correctUserData = {
-    name: 'Tony',
-    lastName: 'Pepperony',
-    email: 'tony_pepper@test.ua',
-    password: 'T0ny_P3pp3r*ny',
-    repeat: 'T0ny_P3pp3r*ny'
-}
-const toRemoveUserData = {
-    name: 'Iki',
-    lastName: 'Hiyori',
-    email: 'iki-hiyori@test.ua',
-    password: '1kiHiy0ry',
-    repeat: '1kiHiy0ry'
-}
+import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
+import GaragePage from "../../src/pageObjects/GaragePage/GaragePage.js";
+import {correctUserData} from "../../testData/registration/inputData.js";
+import SettingsPage from "../../src/pageObjects/SettingsPage/SettingsPage.js";
 
 test.describe('Suite7. User creation',()=> {
+    let page
+    let welcomePage
+    let garagePage
+    let settingsPage
 
-    test.beforeEach(async ({page}) => {
-        await page.goto('/')
+    test.beforeEach(async ({browser})=>{
+        page = await browser.newPage()
+        welcomePage = new WelcomePage(page)
+        await welcomePage.visit()
+
+        garagePage = new GaragePage(page)
+        settingsPage = new SettingsPage(page)
     })
 
-    test('TC7.1. Create valid user', async ({ page }) => {
-        const registerBtn = page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]')
-        const modalRegistr = page.locator('//app-signup-modal')
-        const createBtn = modalRegistr.locator('//button', {hasText:'Register'})
+    test('TC7.1. Create valid user', async () => {
 
-        const nameInput = modalRegistr.locator('//input[@id="signupName"]')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
-        const passwordInput = modalRegistr.locator('//input[@id="signupPassword"]')
-        const reEnterInput = modalRegistr.locator('//input[@id="signupRepeatPassword"]')
+        const registerPopup = await welcomePage.clickRegistrationButtonAndOpenPopup()
+        await registerPopup.fillForm(correctUserData.name, correctUserData.lastName, `aqa-${correctUserData.email}`, correctUserData.password, correctUserData.repeat)
 
-        await registerBtn.click()
+        await expect(registerPopup.createButton, 'create button should be enabled').toBeEnabled()
 
-        await nameInput.fill(correctUserData.name)
-        await lastNameInput.fill(correctUserData.lastName)
-        await emailInput.fill(`aqa-${correctUserData.email}`)
-        await passwordInput.fill(correctUserData.password)
-        await reEnterInput.fill(correctUserData.repeat)
+        await registerPopup.clickConfirmRegistrationButton()
+        await garagePage.waitLoaded()
 
-        await expect(createBtn).toBeEnabled()
-        await createBtn.click()
+        await expect(page, 'page has expected URL').toHaveURL('/panel/garage')
 
-        await expect(page).toHaveURL('/panel/garage')
     })
 
-    test('TC7.2. Remove user manually',async ({page})=>{
-        const registerBtn = page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]')
-        const modalRegistr = page.locator('//app-signup-modal')
-        const createBtn = modalRegistr.locator('//button', {hasText:'Register'})
+    test('TC7.2. Sign in and remove user',async ()=>{
 
-        const nameInput = modalRegistr.locator('//input[@id="signupName"]')
-        const lastNameInput = modalRegistr.locator('//input[@id="signupLastName"]')
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
-        const passwordInput = modalRegistr.locator('//input[@id="signupPassword"]')
-        const reEnterInput = modalRegistr.locator('//input[@id="signupRepeatPassword"]')
+        const signInPopup = await welcomePage.clickSigningButtonAndOpenPopup()
+        await signInPopup.fillForm(`aqa-${correctUserData.email}`, correctUserData.password)
 
-        await registerBtn.click()
+        await expect(signInPopup.loginButton, 'login button should be enabled').toBeEnabled()
 
-        await nameInput.fill(toRemoveUserData.name)
-        await lastNameInput.fill(toRemoveUserData.lastName)
-        await emailInput.fill(`aqa-${toRemoveUserData.email}`)
-        await passwordInput.fill(toRemoveUserData.password)
-        await reEnterInput.fill(toRemoveUserData.repeat)
+        await signInPopup.clickLoginButton()
+        await garagePage.waitLoaded()
 
-        await expect(createBtn).toBeEnabled()
-        await createBtn.click()
+        await garagePage.clickSettingsAndRedirect()
+        await settingsPage.waitLoaded()
 
-        await expect(page).toHaveURL('/panel/garage')
+        const removePopup = await settingsPage.clickRemoveButtonAndOpenPopup()
+        await removePopup.clickConfirmRemoveButtonAndRedirect()
 
-        const settingsBtn = page.getByRole('link', { name: 'Settings' })
-        await settingsBtn.click()
-
-        await expect(page).toHaveURL('/panel/settings')
-
-        const removeBtn = page.locator('button',{hasText:'Remove my account'})
-        await removeBtn.click()
-
-        const removeModal = page.locator('//app-remove-account-modal')
-        await expect(removeModal).toBeVisible()
-
-        const confirmRemoveBtn = removeModal.locator('button',{hasText:'Remove'})
-        await confirmRemoveBtn.click()
+        await welcomePage.waitLoaded()
     })
 })
