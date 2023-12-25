@@ -1,94 +1,63 @@
 import {test, expect} from "@playwright/test";
-
-const emailData = {
-    positiveEmail: 'test@test.ua',
-    wrongFormatEmail: 'test'
-}
+import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {emailData} from "../../testData/registration/inputData.js";
+import {expErrorMessagesEmail} from "../../testData/registration/errorMessages.js";
 
 test.describe('Suite4. Email field validation',()=> {
+    let page
+    let welcomePage
+    let registerPopup
 
-    test.beforeEach(async ({page}) => {
-        await page.goto('/')
-        const registrBtn = page.locator('//button[@class="hero-descriptor_btn btn btn-primary"]')
-        await registrBtn.click()
+    test.beforeEach(async ({browser})=>{
+
+        page = await browser.newPage()
+        welcomePage = new WelcomePage(page)
+        await welcomePage.visit()
+        registerPopup = await welcomePage.clickRegistrationButtonAndOpenPopup()
+
     })
 
-    test('TC4.1. Positive fill', async ({ page }) => {
-        const modalRegistr = page.locator('//app-signup-modal')
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+    test('TC4.1. Positive fill', async () => {
 
-        await emailInput.fill(emailData.positiveEmail)
-        await emailInput.evaluate(e => e.blur())
-        await expect(await emailInput.inputValue()).toEqual(emailData.positiveEmail)
-        await expect(messageBlock).toBeHidden()
+        await registerPopup.emailInput.fill(emailData.positiveEmail)
+        registerPopup.emailInput.blur()
+        const valueOfEmail = await registerPopup.getInputValueOfEmail()
+
+        await expect(valueOfEmail, 'input value is equal to filled value').toEqual(emailData.positiveEmail)
+        await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
+
     })
 
-    test('TC4.2. Fill by label',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const emailLabel = modalRegistr.locator("//label[text()='Email']")
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
+    test('TC4.2. Fill by label',async ()=>{
 
-        await emailLabel.fill(emailData.positiveEmail)
-        const result = await emailInput.inputValue()
-        await expect.soft(result).toEqual(emailData.positiveEmail)
+        await registerPopup.emailLabel.fill(emailData.positiveEmail)
+        const valueOfEmail = await registerPopup.getInputValueOfEmail()
+
+        await expect(valueOfEmail, 'input value is equal to filled value').toEqual(emailData.positiveEmail)
+
     })
 
-    test('TC4.3. Fill with incorrect value',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
+    test('TC4.3. Fill with incorrect value',async ()=>{
 
-        const expectedMessages = ['Email is incorrect']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        await registerPopup.emailInput.fill(emailData.wrongFormatEmail)
+        registerPopup.emailInput.blur()
 
-        await emailInput.fill(emailData.wrongFormatEmail)
-        await emailInput.evaluate(e => e.blur())
-        await expect(emailInput).toHaveAttribute('class', 'form-control ng-invalid ng-dirty is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesEmail.invalid])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 
-    test('TC4.4. Empty',async ({page})=>{
-        const modalRegistr = page.locator('//app-signup-modal')
-        const emailInput = modalRegistr.locator('//input[@id="signupEmail"]')
+    test('TC4.4. Empty',async ()=>{
 
-        const expectedMessages = ['Email required']
-        const messageBlock = modalRegistr.locator('//div[@class="invalid-feedback"]').nth(0)
+        await registerPopup.emailInput.focus()
+        registerPopup.emailInput.blur()
 
-        await emailInput.focus()
-        await emailInput.evaluate(e => e.blur())
-        await expect(emailInput).toHaveAttribute('class', 'form-control ng-pristine ng-invalid is-invalid ng-touched')
-        await expect(messageBlock).toBeVisible()
+        await expect(registerPopup.errorMessages, 'block with errors is visible').toBeVisible()
 
-        const selectedMessages = messageBlock.locator('//p')
+        const errorMessagesOnForm = await registerPopup.getListOfMessages()
+        await expect(errorMessagesOnForm, 'error messages are equal to expected').toEqual([expErrorMessagesEmail.required])
 
-        async function getMessageList (){
-            const messageList = []
-            const allMessages = await selectedMessages.all()
-
-            for (const mess of allMessages) {
-                const messageText = await mess.innerText()
-                messageList.push(messageText)
-            }
-            return messageList
-        }
-
-        const result = await getMessageList()
-        await expect(result).toEqual(expectedMessages)
     })
 })
