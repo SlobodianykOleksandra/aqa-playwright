@@ -1,7 +1,9 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test'
+import {config as testConfig} from './config/config.js'
 
 const config = defineConfig({
+
   testMatch: '/tests/**/*.spec.js',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -11,18 +13,17 @@ const config = defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: 'https://qauto.forstudy.space',
     acceptDownloads: false,
-    httpCredentials:{
-      username: 'guest',
-      password: 'welcome2qauto',
-    },
-    // actionTimeout:1_500,
+    actionTimeout: 3_000,
     headless: false,
 
-    launchOptions:{
-      slowMo: 500
-    }
+    baseURL: testConfig.baseURL,
+
+    httpCredentials: testConfig.httpCredentials
+
+    // launchOptions:{
+    //   slowMo: 500
+    // }
   },
 
   projects:[
