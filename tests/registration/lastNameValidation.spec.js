@@ -21,9 +21,7 @@ test.describe('Suite3. Last Name field validation',()=> {
 
         await registerPopup.lastNameInput.fill(lastNameData.positiveLastName)
         registerPopup.lastNameInput.blur()
-        const valueOfLastName = await registerPopup.getInputValueOfLastName()
-
-        await expect(valueOfLastName, 'input value is equal to filled value').toEqual(lastNameData.positiveLastName)
+        await expect(registerPopup.lastNameInput).toHaveValue(lastNameData.positiveLastName)
         await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
 
     })
@@ -31,9 +29,7 @@ test.describe('Suite3. Last Name field validation',()=> {
     test('TC3.2. Fill by label',async ()=>{
 
         await registerPopup.lastNameLabel.fill(lastNameData.positiveLastName)
-        const valueOfLastName = await registerPopup.getInputValueOfLastName()
-
-        await expect.soft(valueOfLastName, 'input value is equal to filled value').toEqual(lastNameData.positiveLastName)
+        await expect.soft(registerPopup.lastNameInput, 'input value is equal to filled value').toHaveValue(lastNameData.positiveLastName)
 
     })
 

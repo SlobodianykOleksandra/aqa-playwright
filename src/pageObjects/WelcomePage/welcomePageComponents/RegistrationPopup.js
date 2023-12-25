@@ -55,20 +55,4 @@ export default class RegistrationPopup extends BaseComponent{
         }
         return messageList
     }
-
-    async getInputValueOfName(){
-        return await this.nameInput.inputValue()
-    }
-    async getInputValueOfLastName(){
-        return await this.lastNameInput.inputValue()
-    }
-    async getInputValueOfEmail(){
-        return await this.emailInput.inputValue()
-    }
-    async getInputValueOfPassword(){
-        return await this.passwordInput.inputValue()
-    }
-    async getInputValueOfRepeat(){
-        return await this.repeatInput.inputValue()
-    }
 }

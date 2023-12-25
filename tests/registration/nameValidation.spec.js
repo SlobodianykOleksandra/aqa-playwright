@@ -21,9 +21,7 @@ test.describe('Suite2. Name field validation',()=> {
 
         await registerPopup.nameInput.fill(nameData.positiveName)
         registerPopup.nameInput.blur()
-        const valueOfName = await registerPopup.getInputValueOfName()
-
-        await expect(valueOfName, 'input value is equal to filled value').toEqual(nameData.positiveName)
+        await expect(registerPopup.nameInput, 'input value is equal to filled value').toHaveValue(nameData.positiveName)
         await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
 
     })
@@ -31,9 +29,7 @@ test.describe('Suite2. Name field validation',()=> {
     test('TC2.2. Fill by label',async ()=>{
 
         await registerPopup.nameLabel.fill(nameData.positiveName)
-        const valueOfName = await registerPopup.getInputValueOfName()
-
-        await expect.soft(valueOfName, 'input value is equal to filled value').toEqual(nameData.positiveName)
+        await expect.soft(registerPopup.nameInput, 'input value is equal to filled value').toHaveValue(nameData.positiveName)
 
     })
 

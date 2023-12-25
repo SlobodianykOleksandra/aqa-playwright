@@ -23,9 +23,7 @@ test.describe('Suite5. Password field validation',()=> {
 
         await registerPopup.passwordInput.fill(passwordData.positivePass)
         registerPopup.passwordInput.blur()
-        const valueOfPassword = await registerPopup.getInputValueOfPassword()
-
-        await expect(valueOfPassword, 'input value is equal to filled value').toEqual(passwordData.positivePass)
+        await expect(registerPopup.passwordInput, 'input value is equal to filled value').toHaveValue(passwordData.positivePass)
         await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
 
     })
@@ -33,8 +31,7 @@ test.describe('Suite5. Password field validation',()=> {
     test('TC5.2. Fill by label',async ()=>{
 
         await registerPopup.passwordLabel.fill(passwordData.positivePass)
-        const valueOfPassword = await registerPopup.getInputValueOfPassword()
-        await expect(valueOfPassword, 'input value is equal to filled value').toEqual(passwordData.positivePass)
+        await expect(registerPopup.passwordInput, 'input value is equal to filled value').toHaveValue(passwordData.positivePass)
 
     })
 

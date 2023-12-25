@@ -24,10 +24,7 @@ test.describe('Suite6. Re-enter password field validation',()=> {
 
         await registerPopup.repeatInput.fill(repeatData.positiveRepeat)
         registerPopup.repeatInput.blur()
-
-        const valueOfRepeat = await registerPopup.getInputValueOfRepeat()
-
-        await expect(valueOfRepeat, 'input value is equal to filled value').toEqual
+        await expect(registerPopup.repeatInput, 'input value is equal to filled value').toHaveValue(repeatData.positiveRepeat)
         await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
 
     })
@@ -35,8 +32,7 @@ test.describe('Suite6. Re-enter password field validation',()=> {
     test('TC6.2. Fill by label',async ()=>{
 
         await registerPopup.repeatLabel.fill(repeatData.positiveRepeat)
-        const valueOfRepeat = await registerPopup.getInputValueOfRepeat()
-        await expect(valueOfRepeat, 'input value is equal to filled value').toEqual
+        await expect( registerPopup.repeatInput, 'input value is equal to filled value').toHaveValue(repeatData.positiveRepeat)
 
     })
 

@@ -21,9 +21,7 @@ test.describe('Suite4. Email field validation',()=> {
 
         await registerPopup.emailInput.fill(emailData.positiveEmail)
         registerPopup.emailInput.blur()
-        const valueOfEmail = await registerPopup.getInputValueOfEmail()
-
-        await expect(valueOfEmail, 'input value is equal to filled value').toEqual(emailData.positiveEmail)
+        await expect(registerPopup.emailInput, 'input value is equal to filled value').toHaveValue(emailData.positiveEmail)
         await expect(registerPopup.errorMessages, 'error message is hidden').toBeHidden()
 
     })
@@ -31,9 +29,7 @@ test.describe('Suite4. Email field validation',()=> {
     test('TC4.2. Fill by label',async ()=>{
 
         await registerPopup.emailLabel.fill(emailData.positiveEmail)
-        const valueOfEmail = await registerPopup.getInputValueOfEmail()
-
-        await expect(valueOfEmail, 'input value is equal to filled value').toEqual(emailData.positiveEmail)
+        await expect(registerPopup.emailInput, 'input value is equal to filled value').toHaveValue(emailData.positiveEmail)
 
     })
 
