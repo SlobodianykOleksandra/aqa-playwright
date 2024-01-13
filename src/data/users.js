@@ -7,3 +7,12 @@ export const USERS = {
         "repeat": "T0ny_P3pp3r*ny"
     }
 }
+export const USER_BODY = {
+    status: 'ok',
+    data: {
+        userId: 77645,
+        photoFilename: 'default-user.png',
+        name: 'Hacker',
+        lastName: 'User'
+    }
+}

@@ -9,6 +9,11 @@ export default class BasePage extends BaseComponent{
         this._waitPageSelector = waitPageSelector
         this.header = new Header(page)
     }
+
+    get page(){
+        return this._page
+    }
+
     async waitLoaded(){
         await this._page.locator(this._waitPageSelector).waitFor()
     }
