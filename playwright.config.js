@@ -7,7 +7,7 @@ const config = defineConfig({
   testMatch: '/tests/**/*.spec.js',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1,
+  retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : 2,
   //reporter: './tests/my-awesome-reporter.ts',
   reporter: 'html',
@@ -27,20 +27,20 @@ const config = defineConfig({
   },
 
   projects:[
-    // {
-    //   name: 'setup',
-    //   testMatch: 'tests/setups/*.setup.js',
-    // },
-    // {
-    //   name: 'teardown',
-    //   testMatch: 'tests/setups/*.teardown.js'
-    // },
     {
-      name: 'smoke',
+      name: 'setup',
+      testMatch: 'tests/setups/*.setup.js',
+    },
+    {
+      name: 'teardown',
+      testMatch: 'tests/setups/*.teardown.js'
+    },
+    {
+      name: 'e2e test',
       // grep: /@smoke/,
-      use: { ...devices['Desktop Chrome'] }
-      // dependencies: ['setup'],
-      // teardown: 'teardown'
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
+      teardown: 'teardown'
     }
     // {
     //   name: 'regression',

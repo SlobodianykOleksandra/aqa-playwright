@@ -12,5 +12,4 @@ export default class SettingsPage extends BasePage{
         await this.removeAccount.removeButton.click()
         return new RemovePopup(this._page)
     }
-
 }
