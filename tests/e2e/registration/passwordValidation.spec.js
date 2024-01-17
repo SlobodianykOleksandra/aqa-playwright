@@ -1,7 +1,7 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import {passwordData} from "../../testData/registration/inputData.js";
-import {expErrorMessagesPassword} from "../../testData/registration/errorMessages.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {passwordData} from "../../../src/data/inputData.js";
+import {expErrorMessagesPassword} from "../../../src/data/errorMessages.js";
 
 
 

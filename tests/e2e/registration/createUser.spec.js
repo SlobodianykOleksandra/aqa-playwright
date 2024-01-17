@@ -1,8 +1,8 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import GaragePage from "../../src/pageObjects/GaragePage/GaragePage.js";
-import {correctUserData} from "../../testData/registration/inputData.js";
-import SettingsPage from "../../src/pageObjects/SettingsPage/SettingsPage.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import GaragePage from "../../../src/pageObjects/GaragePage/GaragePage.js";
+import {correctUserData} from "../../../src/data/inputData.js";
+import SettingsPage from "../../../src/pageObjects/SettingsPage/SettingsPage.js";
 
 test.describe('Suite7. User creation',()=> {
     let page

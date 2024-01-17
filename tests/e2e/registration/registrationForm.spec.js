@@ -1,6 +1,6 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import {expectedLabelsList} from "../../testData/registration/inputData.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {expectedLabelsList} from "../../../src/data/inputData.js";
 
 test.describe('Suite1. Registration form validation',()=> {
     let page

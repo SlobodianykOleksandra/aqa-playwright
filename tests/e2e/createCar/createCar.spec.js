@@ -1,6 +1,6 @@
 import {expect} from "@playwright/test";
-import {test} from "../../src/fixtures/myFixture.js"
-import {CARS} from "../../src/data/cars.js";
+import {test} from "../../../src/fixtures/myFixture.js"
+import {CARS} from "../../../src/data/cars.js";
 
 test.describe('User', ()=>{
     test('login and create car', async ({userGaragePage, page})=>{

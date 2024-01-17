@@ -15,7 +15,7 @@ const config = defineConfig({
   use: {
     acceptDownloads: false,
     actionTimeout: 3_000,
-    headless: false,
+    headless: true,
 
     baseURL: testConfig.baseURL,
 
@@ -40,7 +40,13 @@ const config = defineConfig({
       // grep: /@smoke/,
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
-      teardown: 'teardown'
+      teardown: 'teardown',
+      testMatch: '/tests/e2e/**/*.spec.js'
+    },
+    {
+      name: 'API-tests',
+      // grep: /@smoke/,
+      testMatch: '/tests/api/**/*.spec.js'
     }
     // {
     //   name: 'regression',

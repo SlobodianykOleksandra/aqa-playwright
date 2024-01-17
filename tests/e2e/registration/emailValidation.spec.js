@@ -1,7 +1,7 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import {emailData} from "../../testData/registration/inputData.js";
-import {expErrorMessagesEmail} from "../../testData/registration/errorMessages.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {emailData} from "../../../src/data/inputData.js";
+import {expErrorMessagesEmail} from "../../../src/data/errorMessages.js";
 
 test.describe('Suite4. Email field validation',()=> {
     let page

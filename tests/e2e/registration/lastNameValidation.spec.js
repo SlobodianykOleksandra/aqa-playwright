@@ -1,7 +1,7 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import {lastNameData} from "../../testData/registration/inputData.js";
-import {expErrorMessagesLastName} from "../../testData/registration/errorMessages.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {lastNameData} from "../../../src/data/inputData.js";
+import {expErrorMessagesLastName} from "../../../src/data/errorMessages.js";
 
 test.describe('Suite3. Last Name field validation',()=> {
     let page
