@@ -10,7 +10,7 @@ import {
 import {STORAGE_STATE_USER_PATH} from "../../src/data/constants/storageState.js";
 import {CREATE_CAR_MSG} from "../../src/data/errorMsg.js";
 
-test.describe.only('Change Request', ()=>{
+test.describe('Change Request', ()=>{
     test.afterAll(async ()=>{
         const client = await request.newContext({
             storageState: STORAGE_STATE_USER_PATH

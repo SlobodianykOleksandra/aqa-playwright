@@ -1,7 +1,7 @@
 import {test, expect} from "@playwright/test";
-import WelcomePage from "../../src/pageObjects/WelcomePage/WelcomePage.js";
-import {repeatData} from "../../testData/registration/inputData.js";
-import {expErrorMessagesRepeat} from "../../testData/registration/errorMessages.js";
+import WelcomePage from "../../../src/pageObjects/WelcomePage/WelcomePage.js";
+import {repeatData} from "../../../src/data/inputData.js";
+import {expErrorMessagesRepeat} from "../../../src/data/errorMessages.js";
 
 
 
