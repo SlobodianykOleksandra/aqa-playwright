@@ -5,6 +5,10 @@ export const USERS = {
         "email": "tony_pepper@test.ua",
         "password": "T0ny_P3pp3r*ny",
         "repeat": "T0ny_P3pp3r*ny"
+    },
+    TEST_USER:{
+        "email": "test.test@test.ua",
+        "password": "Qwerty123"
     }
 }
 export const USER_BODY = {

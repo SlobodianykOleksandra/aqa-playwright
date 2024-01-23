@@ -10,5 +10,7 @@ export const CAR_ERROR_MESSAGES = {
 
     invalidBrand: 'Invalid car brand type',
     invalidModel: 'Invalid car model type',
-    invalidMileage: 'Invalid mileage type'
+    invalidMileage: 'Invalid mileage type',
+
+    carNotFound: 'Car not found'
 }
