@@ -2,26 +2,7 @@ import {CAR_BRANDS} from "../../../../../src/dictionary/cars/carBrands.js";
 import {CAR_MODELS} from "../../../../../src/dictionary/cars/carModels.js";
 import {CAR_ERROR_MESSAGES} from "../../../../../src/dictionary/cars/errorMessages.js";
 
-export const positiveFixturesCreateCar ={
-    BMW:{
-        "carBrandId": CAR_BRANDS.BMW.id,
-        "carModelId": CAR_MODELS.BMW.THREE.id,
-        "mileage": 111
-    },
-    PORSCHE:{
-        "carBrandId": CAR_BRANDS.PORSCHE.id,
-        "carModelId": CAR_MODELS.PORSCHE.CAYENNE.id,
-        "mileage": 222
-    },
-    FIAT:{
-        "carBrandId": CAR_BRANDS.FIAT.id,
-        "carModelId": CAR_MODELS.FIAT.PANDA.id,
-        "mileage": 333
-    }
-
-}
-
-export const negativeFixturesCreateCar = [
+export const negativeFixtures = [
     {
         title: 'Brand is missing - error message',
         inputData: {
