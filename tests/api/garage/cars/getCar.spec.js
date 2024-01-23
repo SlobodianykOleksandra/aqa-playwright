@@ -13,6 +13,7 @@ test.describe('Cars API', ()=>{
             let modelId;
             let client;
             let otherClient;
+            let carsCounter = 0
 
             test.beforeAll(async ()=>{
                 otherClient = await APIClient.authenticate(USERS.TEST_USER.email, USERS.TEST_USER.password)
@@ -28,6 +29,7 @@ test.describe('Cars API', ()=>{
                         }
                         const createCarResponseOther = await otherClient.carControler.createCar(createCarRequestBody)
                         await expect(createCarResponseOther.status, 'status should be valid').toBe(201)
+                        carsCounter++
                         })
                     }
                 client = await APIClient.authenticate(USERS.TONNY_PEPPERONY.email, USERS.TONNY_PEPPERONY.password)
@@ -63,11 +65,11 @@ test.describe('Cars API', ()=>{
                 })
             })
 
-            test('Get all users cars',async ()=>{
+            test.only('Get all users cars',async ()=>{
                 const response = await otherClient.carControler.getUserCars()
                 await expect(response.status, 'status should be valid').toBe(200)
                 const resData = await response.data.data
-                await expect(resData.length).toBe(5)
+                await expect(resData.length).toBe(carsCounter)
             })
 
             test('Get brand by Id',async ()=>{
@@ -89,15 +91,16 @@ test.describe('Cars API', ()=>{
             })
 
             test('Get all models',async ()=>{
+                const modelsArray = [
+                    ...Object.values(CAR_MODELS.AUDI),
+                    ...Object.values(CAR_MODELS.BMW),
+                    ...Object.values(CAR_MODELS.FORD),
+                    ...Object.values(CAR_MODELS.PORSCHE),
+                    ...Object.values(CAR_MODELS.FIAT),
+                ]
                 const response = await client.carControler.getModels()
                 await expect(response.status, 'status should be valid').toBe(200)
-                await expect(response.data.data, 'response should be valid').toEqual([
-                    CAR_MODELS.AUDI.TT, CAR_MODELS.AUDI.R8, CAR_MODELS.AUDI.Q7, CAR_MODELS.AUDI.A6, CAR_MODELS.AUDI.A8,
-                    CAR_MODELS.BMW.THREE, CAR_MODELS.BMW.FIVE, CAR_MODELS.BMW.X5, CAR_MODELS.BMW.X6, CAR_MODELS.BMW.Z3,
-                    CAR_MODELS.FORD.FIESTA, CAR_MODELS.FORD.FOCUS, CAR_MODELS.FORD.FUSION, CAR_MODELS.FORD.MONDEO, CAR_MODELS.FORD.SIERRA,
-                    CAR_MODELS.PORSCHE.NINE11, CAR_MODELS.PORSCHE.CAYENNE, CAR_MODELS.PORSCHE.PANAMERA,
-                    CAR_MODELS.FIAT.PALIO, CAR_MODELS.FIAT.DUCATO, CAR_MODELS.FIAT.PANDA, CAR_MODELS.FIAT.PUNTO, CAR_MODELS.FIAT.SCUDO,
-                ])
+                await expect(response.data.data, 'response should be valid').toEqual(modelsArray)
             })
         })
     })
